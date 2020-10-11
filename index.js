@@ -9,7 +9,7 @@ const app = express()
 const port  =  5000
 
 
-const uri = "mongodb+srv://fahimalif:fahimkhan@cluster0.vigvf.mongodb.net/dportal?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.vigvf.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
 app.use(cors())
 app.use(bodyparser.json())
@@ -22,7 +22,13 @@ const client = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: 
 client.connect(err => {
   const appointmentsCollection = client.db("dportal").collection("appointment");
 
-
+app.post("/addAppointment",(req,res) =>{
+    const appointment = req.body
+    appointmentsCollection.insertOne(appointment)
+    .then(result => {
+        res.send(result.insertedCount > 0)
+    })
+})
 
   console.log("db connected");
 });
