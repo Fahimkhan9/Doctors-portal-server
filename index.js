@@ -9,7 +9,6 @@ const app = express()
 const port  =  5000
 
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.vigvf.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
 app.use(cors())
 app.use(bodyparser.json())
@@ -28,6 +27,14 @@ app.post("/addAppointment",(req,res) =>{
     .then(result => {
         res.send(result.insertedCount > 0)
     })
+})
+app.post("/appointmentsByDate",(req,res) =>{
+  const date = req.body
+  console.log(date.date);
+  appointmentsCollection.find({date: date.date})
+  .toArray((err,documents) => {
+    res.send(documents)
+  })
 })
 
   console.log("db connected");
